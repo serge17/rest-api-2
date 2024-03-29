@@ -2,8 +2,11 @@ package org.company.service
 
 import org.company.Util
 import org.company.exception.UserNotFoundException
+import org.company.model.Friends
+import org.company.model.User
 import org.company.repository.FriendsRepository
 import org.company.repository.UserRepository
+import org.company.response.ConnectUsersResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -15,7 +18,7 @@ class UserService(
     private val friendsRepository: FriendsRepository
 ) {
 
-    fun findDistance(firstUserId: Long, secondUserId: Long) : Int{
+    fun findDistance(firstUserId: Long, secondUserId: Long) : Int {
         val firstUserOptional = userRepository.findById(firstUserId)
         val secondUserOptional = userRepository.findById(secondUserId)
 
@@ -28,6 +31,48 @@ class UserService(
 
         val dist = bfs(firstUserId, secondUserId)
         return dist
+    }
+
+    fun connectUsers(firstUserId: Long, secondUserId: Long): ConnectUsersResponse {
+        friendsRepository.save(Friends(firstUserId, secondUserId))
+        return ConnectUsersResponse(true, "")
+    }
+
+    fun getById(id: Long): User {
+        val userOptional = userRepository.findById(id)
+        if (userOptional.isEmpty) {
+            throw UserNotFoundException(id)
+        }
+        return userOptional.get()
+    }
+
+    fun getAll(): List<User> {
+        return userRepository.findAll()
+    }
+
+    fun saveUser(user: User): User {
+        return userRepository.save(user)
+    }
+
+    fun replaceUser(newUser: User, id: Long): User {
+        val userOptional = userRepository.findById(id)
+
+        if (userOptional.isEmpty) {
+            val createdUser = User(newUser.name, newUser.email, newUser.phone, id)
+            userRepository.save(createdUser)
+            return createdUser
+        } else {
+            val user = userOptional.get()
+            user.name = newUser.name
+            user.email = newUser.email
+            user.phone = newUser.phone
+            userRepository.save(user)
+            return user
+        }
+    }
+
+    fun deleteUser(id: Long) {
+        userRepository.deleteById(id)
     }
 
     private fun bfs(first: Long, second: Long, maxDist: Int = Util.maxDist): Int {
