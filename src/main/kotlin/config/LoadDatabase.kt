@@ -8,14 +8,13 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @Configuration
 class LoadDatabase {
     private val log: Logger = LoggerFactory.getLogger(LoadDatabase::class.java)
 
     @Bean
     fun initDatabase(userRepository: UserRepository): CommandLineRunner {
-        return CommandLineRunner { args: Array<String?>? ->
+        return CommandLineRunner {
             userRepository.deleteAll()
 
             val user1 = userRepository.save(User("John Johnson", "john.johnson@example.com", "12345678"))
@@ -25,7 +24,6 @@ class LoadDatabase {
             val user5 = userRepository.save(User("Charles Carlson", "charles.carlson@example.com", "09098776123"))
             val user6 = userRepository.save(User("Bob Robertson", "bob.robertson@example.com", "7676321123"))
             val user7 = userRepository.save(User("Brian Brianson", "brian.brianson@example.com", "87423784623746"))
-
 
             user1.friends.add(user2)
             user2.friends.add(user3)
@@ -46,9 +44,6 @@ class LoadDatabase {
             log.info("Preloading $user5")
             log.info("Preloading $user6")
             log.info("Preloading $user7")
-
-            val path = userRepository.shortestPath(user1, user3)
-            log.info("Path: $path")
         }
     }
 }

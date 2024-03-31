@@ -6,6 +6,8 @@ plugins {
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
 
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+
     kotlin("plugin.spring") version "1.9.23"
     kotlin("plugin.jpa") version "1.9.22"
 }
@@ -28,12 +30,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    runtimeOnly("com.h2database:h2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
-
 }
 
 tasks.withType<KotlinCompile> {
